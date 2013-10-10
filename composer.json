@@ -1,0 +1,16 @@
+{
+    "name": "chriskl/phpssrs-utils",
+    "description": "A set of utilities for SSRS built using the phpssrs library ",
+    "keywords": ["ssrs", "reporting services"],
+    "license": "BSD-2-Clause",
+    "authors": [
+        {
+            "name": "Chris Kings-Lynne",
+            "email": "chris.kingslynne@gmail.com"
+        }
+    ],
+    "bin": ["bin/rssync"],
+    "require": {
+        "chriskl/phpssrs": "v0.1.1"
+    }
+}

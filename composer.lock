@@ -1,0 +1,71 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
+    ],
+    "hash": "52dd3983498aa67abb086581e0ba636f",
+    "packages": [
+        {
+            "name": "chriskl/phpssrs",
+            "version": "v0.1.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/chriskl/phpssrs.git",
+                "reference": "cbce84bbff6976ca6182118ce6c80103ce6b3916"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/chriskl/phpssrs/zipball/cbce84bbff6976ca6182118ce6c80103ce6b3916",
+                "reference": "cbce84bbff6976ca6182118ce6c80103ce6b3916",
+                "shasum": ""
+            },
+            "require": {
+                "ext-soap": "*"
+            },
+            "require-dev": {
+                "phing/phing": "~2.6",
+                "wsdl2phpgenerator/wsdl2phpgenerator": "dev-master"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-0": {
+                    "PhpSsrs\\": [
+                        "library/"
+                    ]
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "BSD-2-Clause"
+            ],
+            "authors": [
+                {
+                    "name": "Chris Kings-Lynne",
+                    "email": "chris.kingslynne@gmail.com"
+                }
+            ],
+            "description": "PHP SQL Server Reporting Services Client Library",
+            "keywords": [
+                "reporting services",
+                "ssrs"
+            ],
+            "time": "2013-10-04 02:17:44"
+        }
+    ],
+    "packages-dev": [
+
+    ],
+    "aliases": [
+
+    ],
+    "minimum-stability": "stable",
+    "stability-flags": [
+
+    ],
+    "platform": [
+
+    ],
+    "platform-dev": [
+
+    ]
+}

@@ -1,0 +1,11 @@
+#!/usr/bin/env php
+<?php
+
+/**
+ * $Id$
+ */
+
+// turn off html errors
+ini_set('html_errors', 'off');
+
+require_once dirname(__FILE__) . '/rs.php';

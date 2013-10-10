@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<home xmlns="https://github.com/chriskl/phpssrs-utils/layout" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+    <!--<role name="My Role" description="An example role">
+        <task id="TASK_1_ID"/>
+        <task id="TASK_2_ID"/>
+    </role>-->
+    <!--<schedule></schedule>
+    <subscription></subscription>-->
+    <folder name="rssync">
+        <folder name="Data Sources">
+            <datasource name="Staging" overwrite="false" connectString="..." credentialRetrieval="Store" enabled="true"
+                        extension="SQL" impersonateUser="false" originalConnectStringExpressionBased="false" password=""
+                        prompt="" useOriginalConnectString="false" userName="" windowsCredentials="false">
+                <property name="Region" value="UK"/>
+                <property name="Department" value="IT"/>
+            </datasource>
+        </folder>
+        <folder name="Test">
+            <property name="Department" value="Finance"/>
+            <property name="Region" value="USA"/>
+            <folder name="A Subfolder"/>
+            <folder name="Another folder">
+                <report name="My Report" overwrite="false" definition="reports/test.rdl">
+                    <property name="Region" value="UK"/>
+                    <property name="Department" value="IT"/>
+                </report>
+            </folder>
+        </folder>
+    </folder>
+</home>
