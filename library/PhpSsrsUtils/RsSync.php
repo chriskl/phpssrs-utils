@@ -96,12 +96,13 @@ class RsSync
         if (array_key_exists('r', $args)) {
             $root = $args['r'];
             if (substr($root, 0, 1) != '/') {
-                throw new InvalidArgumentException("Root path must begin with '/'.  Try: -r " . escapeshellarg("/{$root}"));
+                throw new InvalidArgumentException("Root path must begin with '/'.  Try: -r " . escapeshellarg(
+                        "/{$root}"
+                    ));
             }
 
             $this->path->push($root);
-        }
-        else {
+        } else {
             // Default to root folder
             $this->path->push(self::ROOT);
         }
@@ -296,68 +297,39 @@ class RsSync
                     ) . PHP_EOL
                 );
 
-                // Different behaviour depending on client
-                switch (get_class($this->rs)) {
-                    case 'PhpSsrs\ReportingService2005\ReportingService2005':
-                        $report = new Rs\CreateReport();
-                        $report->Report = $attrs['NAME'];
-                        $report->Parent = $this->path->top();
-                        $report->Overwrite = true;
-                        if (!is_readable($attrs['DEFINITION'])) {
-                            throw new Exception("File not found: " . $attrs['DEFINITION']);
-                        }
-                        $report->Definition = file_get_contents($attrs['DEFINITION']);
-                        $report->Properties = [];
-                        $response = $this->rs->CreateReport($report);
-
-                        // Set data source
-                        if (array_key_exists('DATASOURCEREF', $attrs)) {
-                            $ref = new Rs\DataSourceReference();
-                            $ref->Reference = $attrs['DATASOURCEREF'];
-
-                            $source = new Rs\DataSource();
-                            $source->DataSourceReference = $ref;
-                            $source->Name = $attrs['DATASOURCEREFNAME'];
-
-                            $sources = [];
-                            $sources[0] = $source;
-                            $set = new Rs\SetItemDataSources();
-                            $set->Item = $this->path->top() . '/' . $report->Report;
-                            $set->DataSources = $sources;
-
-                            $this->rs->SetItemDataSources($set);
-                        }
-                        break;
-                    case 'PhpSsrs\ReportingService2005\ReportingService2010':
-                        $report = new Rs\CreateCatalogItem();
-                        $report->ItemType = 'Report';
-                        $report->Name = $attrs['NAME'];
-                        $report->Parent = $this->path->top();
-                        $report->Overwrite = true;
-                        $report->Definition = file_get_contents($attrs['DEFINITION']);
-                        $report->Properties = [];
-                        $response = $this->rs->CreateCatalogItem($report);
-
-                        // Set data source
-                        if (array_key_exists('DATASOURCEREF', $attrs)) {
-                            $ref = new Rs\DataSourceReference();
-                            $ref->Reference = $attrs['DATASOURCEREF'];
-
-                            $source = new Rs\DataSource();
-                            $source->DataSourceReference = $ref;
-                            $source->Name = $name;
-
-                            $sources = [];
-                            $sources[0] = $source;
-
-                            $set = new Rs\SetItemDataSources();
-                            $set->ItemPath = $response->ItemInfo->Path;
-                            $set->DataSources = $sources;
-                            $this->rs->SetItemDataSources($set);
-                        }
-                        break;
+                $report = new Rs\CreateReport();
+                $report->Report = $attrs['NAME'];
+                $report->Parent = $this->path->top();
+                $report->Overwrite = true;
+                if (!is_readable($attrs['DEFINITION'])) {
+                    throw new Exception("File not found: " . $attrs['DEFINITION']);
                 }
+                $report->Definition = file_get_contents($attrs['DEFINITION']);
+                $report->Properties = [];
+                $response = $this->rs->CreateReport($report);
 
+                // Set data source
+                if (array_key_exists('DATASOURCEREF', $attrs)) {
+                    $ref = new Rs\DataSourceReference();
+                    $dsRef = $attrs['DATASOURCEREF'];
+                    $rootRef = $this->path->bottom();
+                    if ($rootRef != self::ROOT) {
+                        $dsRef = $rootRef . $dsRef;
+                    }
+                    $ref->Reference = $dsRef;
+
+                    $source = new Rs\DataSource();
+                    $source->DataSourceReference = $ref;
+                    $source->Name = $attrs['DATASOURCEREFNAME'];
+
+                    $sources = [];
+                    $sources[0] = $source;
+                    $set = new Rs\SetItemDataSources();
+                    $set->Item = $this->path->top() . '/' . $report->Report;
+                    $set->DataSources = $sources;
+
+                    $this->rs->SetItemDataSources($set);
+                }
                 break;
         }
     }
