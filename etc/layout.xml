@@ -6,77 +6,88 @@
     </role>-->
     <!--<schedule></schedule>
     <subscription></subscription>-->
-    <folder name="Dev">
-        <folder name="Data Sources">
-            <datasource name="Navigate"
-                        connectString="${datasource.Navigate.connectString}"
-                        credentialRetrieval="Store"
-                        userName="${datasource.Navigate.username}"
-                        password="${datasource.Navigate.password}">
-                <!--<property name="Region" value="UK"/>-->
-                <!--<property name="Department" value="IT"/>-->
-            </datasource>
-            <datasource name="Reporting"
-                        connectString="Data Source=(local);Initial Catalog=AccordReporting"
-                        prompt="Enter username and password...">
-                <!--<property name="Region" value="UK"/>-->
-                <!--<property name="Department" value="IT"/>-->
-            </datasource>
-        </folder>
-        <folder name="Standard"/>
-        <folder name="Local">
-            <folder name="SAE-AU">
-                <folder name="Finance">
+    <folder name="Data Sources">
+        <datasource name="Navigate"
+                    connectString="${datasource.Navigate.connectString}"
+                    credentialRetrieval="Store"
+                    userName="${datasource.Navigate.username}"
+                    password="${datasource.Navigate.password}">
+            <!--<property name="Region" value="UK"/>-->
+            <!--<property name="Department" value="IT"/>-->
+        </datasource>
+        <datasource name="Reporting"
+                    connectString="${datasource.Reporting.connectString}"
+                    credentialRetrieval="Prompt">
+            <!--<property name="Region" value="UK"/>-->
+            <!--<property name="Department" value="IT"/>-->
+        </datasource>
+    </folder>
+    <folder name="Standard"/>
+    <folder name="Local">
+        <folder name="SAE-AU">
+            <folder name="Finance">
+                <report name="Invoice"
+                        definition="c:/development/accord/reports/site/SAE Australia/Invoice.rdl"
+                        datasourceref="Data Sources/Navigate" datasourcerefname="Accord">
+                </report>
+                <report name="Receipt"
+                        definition="c:/development/accord/reports/site/SAE Australia/Payment Receipt.rdl"
+                        datasourceref="Data Sources/Navigate" datasourcerefname="Accord">
+                </report>
+                <report name="Outstanding Fees - Course Completed"
+                        definition="c:/development/accord/reports/site/SAE Australia/Outstanding Fees - Course Completed.rdl"
+                        datasourceref="Data Sources/Navigate" datasourcerefname="Accord">
+                </report>
+                <report name="Outstanding Fees - Deferred or Cancelled students"
+                        definition="c:/development/accord/reports/site/SAE Australia/Outstanding fees - Deferred or Cancelled students.rdl"
+                        datasourceref="Data Sources/Navigate" datasourcerefname="Accord">
+                </report>
+            </folder>
+            <folder name="Enrolments">
+                <folder name="Academic">
+                    <report name="Academic Transcript"
+                            definition="c:/development/accord/reports/site/SAE Australia/Academic Transcript.rdl"
+                            datasourceref="Data Sources/Navigate" datasourcerefname="Accord">
+                    </report>
+                    <report name="Graduation Transcript"
+                            definition="c:/development/accord/reports/site/SAE Australia/Graduation Certificate.rdl"
+                            datasourceref="Data Sources/Navigate" datasourcerefname="Accord">
+                    </report>
+                </folder>
+                <folder name="Attendance">
+                    <report name="Attendance Statement"
+                            definition="c:/development/accord/reports/site/SAE Australia/Attendance Statement.rdl"
+                            datasourceref="Data Sources/Navigate" datasourcerefname="Accord">
+                    </report>
+                    <report name="Attendance Warning Letter"
+                            definition="c:/development/accord/reports/site/SAE Australia/Attendance Warning Letter.rdl"
+                            datasourceref="Data Sources/Navigate" datasourcerefname="Accord">
+                    </report>
+                    <report name="Certificate of Attendance"
+                            definition="c:/development/accord/reports/site/SAE Australia/Certificate of Attendance.rdl"
+                            datasourceref="Data Sources/Navigate" datasourcerefname="Accord">
+                    </report>
+                </folder>
+            </folder>
+            <folder name="Study Periods">
+                <report name="Grade Distributions"
+                        definition="c:/development/accord/reports/site/SAE Australia/Grade Distributions.rdl"
+                        datasourceref="Data Sources/Navigate" datasourcerefname="Accord">
+                </report>
+                <report name="Board of Examiners"
+                        definition="c:/development/accord/reports/site/SAE Australia/Board of Examiners Report.rdl"
+                        datasourceref="Data Sources/Navigate" datasourcerefname="Accord">
+                </report>
+            </folder>
+            <folder name="Letters of Offer">
+                <report name="Letter of Offer"
+                        definition="c:/development/accord/reports/site/SAE Australia/Letter of Offer.rdl"
 
-                </folder>
-                <folder name="Enrolments">
-                    <folder name="Academic">
-                        <report name="Academic Transcript"
-                                definition="c:/development/accord/reports/site/SAE Australia/Academic Transcript.rdl"
-                                datasourceref="/Dev/Data Sources/Navigate" datasourcerefname="Accord">
-                        </report>
-                        <report name="Academic Transcript"
-                                definition="c:/development/accord/reports/site/SAE Australia/Graduation Certificate.rdl"
-                                datasourceref="/Dev/Data Sources/Navigate" datasourcerefname="Accord">
-                        </report>
-                    </folder>
-                    <folder name="Attendance">
-                        <report name="Attendance Statement"
-                                definition="c:/development/accord/reports/site/SAE Australia/Attendance Statement.rdl"
-                                datasourceref="/Dev/Data Sources/Navigate" datasourcerefname="Accord">
-                        </report>
-                        <report name="Attendance Warning Letter"
-                                definition="c:/development/accord/reports/site/SAE Australia/Attendance Warning Letter.rdl"
-                                datasourceref="/Dev/Data Sources/Navigate" datasourcerefname="Accord">
-                        </report>
-                        <report name="Certificate of Attendance"
-                                definition="c:/development/accord/reports/site/SAE Australia/Certificate of Attendance.rdl"
-                                datasourceref="/Dev/Data Sources/Navigate" datasourcerefname="Accord">
-                        </report>
-                    </folder>
-                </folder>
-                <!--<property name="Department" value="Finance"/>-->
-                <!--<property name="Region" value="USA"/>-->
-                <folder name="Study Periods">
-                    <report name="Grade Distributions"
-                            definition="c:/development/accord/reports/site/SAE Australia/Grade Distributions.rdl"
-                            datasourceref="/Dev/Data Sources/Navigate" datasourcerefname="Accord">
-                    </report>
-                    <report name="Board of Examiners"
-                            definition="c:/development/accord/reports/site/SAE Australia/Board of Examiners Report.rdl"
-                            datasourceref="/Dev/Data Sources/Navigate" datasourcerefname="Accord">
-                    </report>
-                </folder>
-                <folder name="Letters of Offer">
-                    <report name="Letter of Offer"
-                            definition="c:/development/accord/reports/site/SAE Australia/Letter of Offer.rdl"
-
-                            datasourceref="/Dev/Data Sources/Navigate" datasourcerefname="Demo">
-                        <!-- todo: move to sub element for array of datasources -->
-                        <!--<property name="Region" value="UK"/>-->
-                        <!--<property name="Department" value="IT"/>-->
-                    </report>
-                </folder>
+                        datasourceref="Data Sources/Navigate" datasourcerefname="Demo">
+                    <!-- todo: move to sub element for array of datasources -->
+                    <!--<property name="Region" value="UK"/>-->
+                    <!--<property name="Department" value="IT"/>-->
+                </report>
             </folder>
         </folder>
     </folder>
