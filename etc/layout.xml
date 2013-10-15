@@ -6,24 +6,77 @@
     </role>-->
     <!--<schedule></schedule>
     <subscription></subscription>-->
-    <folder name="rssync">
+    <folder name="Dev">
         <folder name="Data Sources">
-            <datasource name="Staging" overwrite="false" connectString="..." credentialRetrieval="Store" enabled="true"
-                        extension="SQL" impersonateUser="false" originalConnectStringExpressionBased="false" password=""
-                        prompt="" useOriginalConnectString="false" userName="" windowsCredentials="false">
-                <property name="Region" value="UK"/>
-                <property name="Department" value="IT"/>
+            <datasource name="Navigate"
+                        connectString="${datasource.Navigate.connectString}"
+                        credentialRetrieval="Store"
+                        userName="${datasource.Navigate.username}"
+                        password="${datasource.Navigate.password}">
+                <!--<property name="Region" value="UK"/>-->
+                <!--<property name="Department" value="IT"/>-->
+            </datasource>
+            <datasource name="Reporting"
+                        connectString="Data Source=(local);Initial Catalog=AccordReporting"
+                        prompt="Enter username and password...">
+                <!--<property name="Region" value="UK"/>-->
+                <!--<property name="Department" value="IT"/>-->
             </datasource>
         </folder>
-        <folder name="Test">
-            <property name="Department" value="Finance"/>
-            <property name="Region" value="USA"/>
-            <folder name="A Subfolder"/>
-            <folder name="Another folder">
-                <report name="My Report" overwrite="false" definition="reports/test.rdl">
-                    <property name="Region" value="UK"/>
-                    <property name="Department" value="IT"/>
-                </report>
+        <folder name="Standard"/>
+        <folder name="Local">
+            <folder name="SAE-AU">
+                <folder name="Finance">
+
+                </folder>
+                <folder name="Enrolments">
+                    <folder name="Academic">
+                        <report name="Academic Transcript"
+                                definition="c:/development/accord/reports/site/SAE Australia/Academic Transcript.rdl"
+                                datasourceref="/Dev/Data Sources/Navigate" datasourcerefname="Accord">
+                        </report>
+                        <report name="Academic Transcript"
+                                definition="c:/development/accord/reports/site/SAE Australia/Graduation Certificate.rdl"
+                                datasourceref="/Dev/Data Sources/Navigate" datasourcerefname="Accord">
+                        </report>
+                    </folder>
+                    <folder name="Attendance">
+                        <report name="Attendance Statement"
+                                definition="c:/development/accord/reports/site/SAE Australia/Attendance Statement.rdl"
+                                datasourceref="/Dev/Data Sources/Navigate" datasourcerefname="Accord">
+                        </report>
+                        <report name="Attendance Warning Letter"
+                                definition="c:/development/accord/reports/site/SAE Australia/Attendance Warning Letter.rdl"
+                                datasourceref="/Dev/Data Sources/Navigate" datasourcerefname="Accord">
+                        </report>
+                        <report name="Certificate of Attendance"
+                                definition="c:/development/accord/reports/site/SAE Australia/Certificate of Attendance.rdl"
+                                datasourceref="/Dev/Data Sources/Navigate" datasourcerefname="Accord">
+                        </report>
+                    </folder>
+                </folder>
+                <!--<property name="Department" value="Finance"/>-->
+                <!--<property name="Region" value="USA"/>-->
+                <folder name="Study Periods">
+                    <report name="Grade Distributions"
+                            definition="c:/development/accord/reports/site/SAE Australia/Grade Distributions.rdl"
+                            datasourceref="/Dev/Data Sources/Navigate" datasourcerefname="Accord">
+                    </report>
+                    <report name="Board of Examiners"
+                            definition="c:/development/accord/reports/site/SAE Australia/Board of Examiners Report.rdl"
+                            datasourceref="/Dev/Data Sources/Navigate" datasourcerefname="Accord">
+                    </report>
+                </folder>
+                <folder name="Letters of Offer">
+                    <report name="Letter of Offer"
+                            definition="c:/development/accord/reports/site/SAE Australia/Letter of Offer.rdl"
+
+                            datasourceref="/Dev/Data Sources/Navigate" datasourcerefname="Demo">
+                        <!-- todo: move to sub element for array of datasources -->
+                        <!--<property name="Region" value="UK"/>-->
+                        <!--<property name="Department" value="IT"/>-->
+                    </report>
+                </folder>
             </folder>
         </folder>
     </folder>
