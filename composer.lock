@@ -3,20 +3,20 @@
         "This file locks the dependencies of your project to a known state",
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file"
     ],
-    "hash": "52dd3983498aa67abb086581e0ba636f",
+    "hash": "272459777271e92db876c04b34e7bf16",
     "packages": [
         {
             "name": "chriskl/phpssrs",
-            "version": "v0.1.1",
+            "version": "v0.1.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/chriskl/phpssrs.git",
-                "reference": "cbce84bbff6976ca6182118ce6c80103ce6b3916"
+                "reference": "8b46517807db79bd72492a1347f10291fad1903a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/chriskl/phpssrs/zipball/cbce84bbff6976ca6182118ce6c80103ce6b3916",
-                "reference": "cbce84bbff6976ca6182118ce6c80103ce6b3916",
+                "url": "https://api.github.com/repos/chriskl/phpssrs/zipball/8b46517807db79bd72492a1347f10291fad1903a",
+                "reference": "8b46517807db79bd72492a1347f10291fad1903a",
                 "shasum": ""
             },
             "require": {
@@ -49,7 +49,7 @@
                 "reporting services",
                 "ssrs"
             ],
-            "time": "2013-10-04 02:17:44"
+            "time": "2013-10-13 02:30:12"
         }
     ],
     "packages-dev": [

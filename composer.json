@@ -11,6 +11,6 @@
     ],
     "bin": ["bin/rssync"],
     "require": {
-        "chriskl/phpssrs": "v0.1.1"
+        "chriskl/phpssrs": "0.1.*"
     }
 }

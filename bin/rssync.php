@@ -23,8 +23,7 @@ require_once 'PhpSsrsUtils/RsSync.php';
 
 try {
     // Grab and clean up the CLI arguments
-    $args = isset($argv) ? $argv : $_SERVER['argv'];
-    array_shift($args); // 1st arg is script name, so drop it
+    $args = getopt('l:h:r:p:');
 
     RsSync::start($args);
 } catch (Exception $x) {

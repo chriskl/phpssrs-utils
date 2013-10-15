@@ -39,7 +39,19 @@ class RsSync
      * Properties that can be substituted into the XML
      * @var array
      */
-    protected $properties = [];
+    public $properties = [];
+
+    /**
+     * Layout
+     * @var string
+     */
+    public $layout;
+
+    /**
+     * Location
+     * @var string
+     */
+    public $location;
 
     /**
      * Execute the rssync command
@@ -54,25 +66,68 @@ class RsSync
     public function __construct()
     {
         $this->path = new SplStack();
-        $this->path->push(self::ROOT);
 
         $this->stack = new SplStack();
+    }
 
-        $this->properties = [
-            'datasource.Navigate.connectString' => 'Data Source=(local);Initial Catalog=Accord',
-            'datasource.Navigate.userName' => 'accord',
-            'datasource.Navigate.password' => 'accord'
-        ];
+    /**
+     * Process arguments
+     * @param array $args Argument array (from getopt)
+     * @throws InvalidArgumentException
+     */
+    public function processArgs(array $args)
+    {
+        // Layout
+        if (!array_key_exists('l', $args)) {
+            throw new InvalidArgumentException("Missing layout argument: -l");
+        }
+        if (!is_readable($args['l'])) {
+            throw new InvalidArgumentException("Layout not found: " . $args['l']);
+        }
+        $this->layout = $args['l'];
+
+        // Reporting Service
+        if (!array_key_exists('h', $args)) {
+            throw new InvalidArgumentException("Missing reporting service URL: -h");
+        }
+        $this->location = $args['h'];
+
+        // Root folder
+        if (array_key_exists('r', $args)) {
+            $root = $args['r'];
+            if (substr($root, 0, 1) != '/') {
+                throw new InvalidArgumentException("Root path must begin with '/'.  Try: -r " . escapeshellarg("/{$root}"));
+            }
+
+            $this->path->push($root);
+        }
+        else {
+            // Default to root folder
+            $this->path->push(self::ROOT);
+        }
+
+
+        // Properties
+        if (array_key_exists('p', $args)) {
+            // Check for single property
+            if (is_string($args['p'])) {
+                $args['p'] = [$args['p']];
+            }
+            foreach ($args['p'] as $p) {
+                list($key, $val) = explode('=', $p, 2);
+                $this->properties[$key] = $val;
+            }
+        }
     }
 
     public function execute($args)
     {
         try {
+            $this->processArgs($args);
+
             $this->rs = $this->getClient();
 
-            $layout = 'etc/layout.xml';
-
-            $this->processLayout($layout);
+            $this->processLayout();
         } catch (Exception $e) {
             fwrite(STDERR, $e->getMessage() . PHP_EOL);
         }
@@ -328,8 +383,9 @@ class RsSync
      *
      * @param $layout Layout XML file
      */
-    public function processLayout($layout)
+    public function processLayout()
     {
+        $layout = $this->layout;
         //$this->validateLayout($layout);
 
 
@@ -383,7 +439,7 @@ class RsSync
             'cache_wsdl' => WSDL_CACHE_NONE,
             'keep_alive' => true,
             'features' => SOAP_SINGLE_ELEMENT_ARRAYS & SOAP_USE_XSI_ARRAY_TYPE,
-            //'location' => 'http://hksql-t01.services.local/reportserver/ReportService2005.asmx',
+            'location' => $this->location,
             //'uri' => 'http://schemas.microsoft.com/sqlserver/2005/06/30/reporting/reportingservices',
             //'style' => SOAP_DOCUMENT,
             //'use' => SOAP_LITERAL,
