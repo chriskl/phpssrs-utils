@@ -7,7 +7,7 @@
  */
 
 
-use \PhpSsrs\ReportingService2005 as Rs;
+use \PhpSsrs\ReportingService2010 as Rs;
 
 class RsSync
 {
@@ -31,7 +31,7 @@ class RsSync
 
     /**
      * SSRS SOAP client
-     * @var Rs\ReportingService2005
+     * @var Rs\ReportingService2010
      */
     protected $rs;
 
@@ -286,6 +286,30 @@ class RsSync
                     $overwrite, $definition, []);
                 $this->rs->CreateDataSource($dataSource);
                 break;
+            case 'DATASET':
+                fwrite(
+                    STDOUT,
+                    sprintf(
+                        'Creating dataset: %s%s%s',
+                        $this->path->top(),
+                        ($this->path->top() == self::ROOT ? '' : '/'),
+                        $attrs['NAME']
+                    ) . PHP_EOL
+                );
+
+                $report = new Rs\CreateCatalogItem();
+                $report->ItemType = 'DataSet';
+                $report->Name = $attrs['NAME'];
+                $report->Parent = $this->path->top();
+                $report->Overwrite = true;
+                if (!is_readable($attrs['DEFINITION'])) {
+                    throw new Exception("File not found: " . $attrs['DEFINITION']);
+                }
+                $report->Definition = file_get_contents($attrs['DEFINITION']);
+                $report->Properties = [];
+                $response = $this->rs->CreateCatalogItem($report);
+
+                break;
             case 'REPORT':
                 fwrite(
                     STDOUT,
@@ -297,8 +321,9 @@ class RsSync
                     ) . PHP_EOL
                 );
 
-                $report = new Rs\CreateReport();
-                $report->Report = $attrs['NAME'];
+                $report = new Rs\CreateCatalogItem();
+                $report->ItemType = 'Report';
+                $report->Name = $attrs['NAME'];
                 $report->Parent = $this->path->top();
                 $report->Overwrite = true;
                 if (!is_readable($attrs['DEFINITION'])) {
@@ -306,7 +331,7 @@ class RsSync
                 }
                 $report->Definition = file_get_contents($attrs['DEFINITION']);
                 $report->Properties = [];
-                $response = $this->rs->CreateReport($report);
+                $response = $this->rs->CreateCatalogItem($report);
 
                 // Set data source
                 if (array_key_exists('DATASOURCEREF', $attrs)) {
@@ -325,7 +350,7 @@ class RsSync
                     $sources = [];
                     $sources[0] = $source;
                     $set = new Rs\SetItemDataSources();
-                    $set->Item = $this->path->top() . '/' . $report->Report;
+                    $set->ItemPath = $this->path->top() . '/' . $report->Name;
                     $set->DataSources = $sources;
 
                     $this->rs->SetItemDataSources($set);
@@ -398,12 +423,12 @@ class RsSync
     }
 
     /**
-     * @return ReportingService2005
+     * @return ReportingService2010
      */
     protected function getClient()
     {
         // Replace WSDL URL with your URL, or even better a locally saved version of the file.
-        $rs = new Rs\ReportingService2005([
+        $rs = new Rs\ReportingService2010([
             'soap_version' => SOAP_1_2,
             'compression' => true,
             'exceptions' => true,
@@ -412,14 +437,14 @@ class RsSync
             'keep_alive' => true,
             'features' => SOAP_SINGLE_ELEMENT_ARRAYS & SOAP_USE_XSI_ARRAY_TYPE,
             'location' => $this->location,
-            //'uri' => 'http://schemas.microsoft.com/sqlserver/2005/06/30/reporting/reportingservices',
+            //'uri' => 'http://schemas.microsoft.com/sqlserver/2010/06/30/reporting/reportingservices',
             //'style' => SOAP_DOCUMENT,
             //'use' => SOAP_LITERAL,
             'login' => 'NAVITAS\\chris.kings-lynne',
             'password' => 'Minecraft1.7.1',
             //'proxy_host' => 'localhost',
             //'proxy_port' => 8888
-        ], 'ReportService2005.wsdl');
+        ], 'ReportService2010.wsdl');
 
         return $rs;
     }
