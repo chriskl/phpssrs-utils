@@ -42,6 +42,10 @@
                         definition="c:/development/accord/reports/site/SAE Australia/Outstanding fees - Deferred or Cancelled students.rdl"
                         datasourceref="/Data Sources/Navigate" datasourcerefname="Accord">
                 </report>
+                <report name="Statement of Account"
+                        definition="c:/development/accord/reports/site/SAE Australia/Statement Of Account.rdl"
+                        datasourceref="/Data Sources/Navigate" datasourcerefname="Accord">
+                </report>
             </folder>
             <folder name="Enrolments">
                 <folder name="Academic">
@@ -49,8 +53,12 @@
                             definition="c:/development/accord/reports/site/SAE Australia/Academic Transcript.rdl"
                             datasourceref="/Data Sources/Navigate" datasourcerefname="Accord">
                     </report>
-                    <report name="Graduation Transcript"
+                    <report name="Graduation Certificate"
                             definition="c:/development/accord/reports/site/SAE Australia/Graduation Certificate.rdl"
+                            datasourceref="/Data Sources/Navigate" datasourcerefname="Accord">
+                    </report>
+                    <report name="VET Graduation Certificate"
+                            definition="c:/development/accord/reports/site/SAE Australia/VET Graduation Certificate.rdl"
                             datasourceref="/Data Sources/Navigate" datasourcerefname="Accord">
                     </report>
                 </folder>
@@ -76,6 +84,14 @@
                 </report>
                 <report name="Board of Examiners"
                         definition="c:/development/accord/reports/site/SAE Australia/Board of Examiners Report.rdl"
+                        datasourceref="/Data Sources/Navigate" datasourcerefname="Accord">
+                </report>
+                <report name="Potential Graduates"
+                        definition="c:/development/accord/reports/site/SAE Australia/Potential Graduates.rdl"
+                        datasourceref="/Data Sources/Navigate" datasourcerefname="Accord">
+                </report>
+                <report name="Invalid Study Plans"
+                        definition="c:/development/accord/reports/site/SAE Australia/Student Who Can't Progress.rdl"
                         datasourceref="/Data Sources/Navigate" datasourcerefname="Accord">
                 </report>
             </folder>
