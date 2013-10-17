@@ -1,102 +1,94 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified"
-           targetNamespace="https://github.com/chriskl/phpssrs-utils/layout"
-           xmlns:xs="http://www.w3.org/2001/XMLSchema">
+<xs:schema attributeFormDefault="unqualified" elementFormDefault="qualified" targetNamespace="https://github.com/chriskl/phpssrs-utils/layout" xmlns:xs="http://www.w3.org/2001/XMLSchema">
     <xs:element name="home">
         <xs:complexType>
-            <xs:all>
-                <xs:element name="role">
-                    <xs:complexType>
-                        <xs:sequence>
-                            <xs:element name="task" maxOccurs="unbounded" minOccurs="0">
-                                <xs:complexType>
-                                    <xs:simpleContent>
-                                        <xs:extension base="xs:string">
-                                            <xs:attribute type="xs:string" name="id" use="optional"/>
-                                        </xs:extension>
-                                    </xs:simpleContent>
-                                </xs:complexType>
-                            </xs:element>
-                        </xs:sequence>
-                        <xs:attribute type="xs:string" name="name" />
-                        <xs:attribute type="xs:string" name="description"/>
-                    </xs:complexType>
-                </xs:element>
+            <xs:sequence>
                 <xs:element name="folder" maxOccurs="unbounded" minOccurs="0">
-                    <xs:complexType>
-                        <xs:sequence>
-                            <xs:element name="datasource" minOccurs="0">
-                                <xs:complexType>
-                                    <xs:sequence>
-                                        <xs:element name="property" maxOccurs="unbounded" minOccurs="0">
-                                            <xs:complexType>
-                                                <xs:simpleContent>
-                                                    <xs:extension base="xs:string">
-                                                        <xs:attribute type="xs:string" name="name" use="optional"/>
-                                                        <xs:attribute type="xs:string" name="value" use="optional"/>
-                                                    </xs:extension>
-                                                </xs:simpleContent>
-                                            </xs:complexType>
-                                        </xs:element>
-                                    </xs:sequence>
-                                    <xs:attribute type="xs:string" name="name"/>
-                                    <xs:attribute type="xs:string" name="overwrite"/>
-                                    <xs:attribute type="xs:string" name="connectString"/>
-                                    <xs:attribute type="xs:string" name="credentialRetrieval"/>
-                                    <xs:attribute type="xs:string" name="enabled"/>
-                                    <xs:attribute type="xs:string" name="extension"/>
-                                    <xs:attribute type="xs:string" name="impersonateUser"/>
-                                    <xs:attribute type="xs:string" name="originalConnectStringExpressionBased"/>
-                                    <xs:attribute type="xs:string" name="password"/>
-                                    <xs:attribute type="xs:string" name="prompt"/>
-                                    <xs:attribute type="xs:string" name="useOriginalConnectString"/>
-                                    <xs:attribute type="xs:string" name="userName"/>
-                                    <xs:attribute type="xs:string" name="windowsCredentials"/>
-                                </xs:complexType>
-                            </xs:element>
-                            <xs:element name="property" maxOccurs="unbounded" minOccurs="0">
+                    <xs:complexType mixed="true">
+                        <xs:choice maxOccurs="unbounded" minOccurs="0">
+                            <xs:element name="datasource">
                                 <xs:complexType>
                                     <xs:simpleContent>
                                         <xs:extension base="xs:string">
                                             <xs:attribute type="xs:string" name="name" use="optional"/>
-                                            <xs:attribute type="xs:string" name="value" use="optional"/>
+                                            <xs:attribute type="xs:string" name="connectString" use="optional"/>
+                                            <xs:attribute type="xs:string" name="credentialRetrieval" use="optional"/>
+                                            <xs:attribute type="xs:string" name="userName" use="optional"/>
+                                            <xs:attribute type="xs:string" name="password" use="optional"/>
                                         </xs:extension>
                                     </xs:simpleContent>
                                 </xs:complexType>
                             </xs:element>
-                            <xs:element name="folder" maxOccurs="unbounded" minOccurs="0">
-                                <xs:complexType mixed="true">
+                            <xs:element name="dataset">
+                                <xs:complexType>
+                                    <xs:simpleContent>
+                                        <xs:extension base="xs:string">
+                                            <xs:attribute type="xs:string" name="name" use="optional"/>
+                                            <xs:attribute type="xs:string" name="definition" use="optional"/>
+                                        </xs:extension>
+                                    </xs:simpleContent>
+                                </xs:complexType>
+                            </xs:element>
+                            <xs:element name="folder">
+                                <xs:complexType>
                                     <xs:sequence>
-                                        <xs:element name="report" minOccurs="0">
+                                        <xs:element name="folder" maxOccurs="unbounded" minOccurs="0">
                                             <xs:complexType>
                                                 <xs:sequence>
-                                                    <xs:element name="property" maxOccurs="unbounded" minOccurs="0">
+                                                    <xs:element name="report" maxOccurs="unbounded" minOccurs="0">
+                                                        <xs:annotation>
+                                                            <xs:documentation>todo: move to sub element for array of datasources &lt;property name="Region" value="UK"/>&lt;property name="Department" value="IT"/></xs:documentation>
+                                                        </xs:annotation>
                                                         <xs:complexType>
                                                             <xs:simpleContent>
                                                                 <xs:extension base="xs:string">
-                                                                    <xs:attribute type="xs:string" name="name"
-                                                                                  use="optional"/>
-                                                                    <xs:attribute type="xs:string" name="value"
-                                                                                  use="optional"/>
+                                                                    <xs:attribute type="xs:string" name="name" use="optional"/>
+                                                                    <xs:attribute type="xs:string" name="definition" use="optional"/>
+                                                                    <xs:attribute type="xs:string" name="datasourceref" use="optional"/>
+                                                                    <xs:attribute type="xs:string" name="datasourcerefname" use="optional"/>
                                                                 </xs:extension>
                                                             </xs:simpleContent>
                                                         </xs:complexType>
                                                     </xs:element>
+                                                    <xs:element name="folder" maxOccurs="unbounded" minOccurs="0">
+                                                        <xs:complexType>
+                                                            <xs:sequence>
+                                                                <xs:element name="report" maxOccurs="unbounded" minOccurs="0">
+                                                                    <xs:complexType mixed="true">
+                                                                        <xs:sequence>
+                                                                            <xs:element name="itemreference" maxOccurs="unbounded" minOccurs="0">
+                                                                                <xs:complexType>
+                                                                                    <xs:simpleContent>
+                                                                                        <xs:extension base="xs:string">
+                                                                                            <xs:attribute type="xs:string" name="name" use="optional"/>
+                                                                                            <xs:attribute type="xs:string" name="reference" use="optional"/>
+                                                                                        </xs:extension>
+                                                                                    </xs:simpleContent>
+                                                                                </xs:complexType>
+                                                                            </xs:element>
+                                                                        </xs:sequence>
+                                                                        <xs:attribute type="xs:string" name="name" use="optional"/>
+                                                                        <xs:attribute type="xs:string" name="definition" use="optional"/>
+                                                                        <xs:attribute type="xs:string" name="datasourceref" use="optional"/>
+                                                                        <xs:attribute type="xs:string" name="datasourcerefname" use="optional"/>
+                                                                    </xs:complexType>
+                                                                </xs:element>
+                                                            </xs:sequence>
+                                                            <xs:attribute type="xs:string" name="name" use="optional"/>
+                                                        </xs:complexType>
+                                                    </xs:element>
                                                 </xs:sequence>
-                                                <xs:attribute type="xs:string" name="name"/>
-                                                <xs:attribute type="xs:string" name="overwrite"/>
-                                                <xs:attribute type="xs:string" name="definition"/>
+                                                <xs:attribute type="xs:string" name="name" use="optional"/>
                                             </xs:complexType>
                                         </xs:element>
                                     </xs:sequence>
-                                    <xs:attribute type="xs:string" name="name" use="optional"/>
+                                    <xs:attribute type="xs:string" name="name"/>
                                 </xs:complexType>
                             </xs:element>
-                        </xs:sequence>
+                        </xs:choice>
                         <xs:attribute type="xs:string" name="name" use="optional"/>
                     </xs:complexType>
                 </xs:element>
-            </xs:all>
+            </xs:sequence>
         </xs:complexType>
     </xs:element>
 </xs:schema>
