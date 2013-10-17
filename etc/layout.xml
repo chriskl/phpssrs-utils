@@ -23,8 +23,10 @@
         </datasource>
     </folder>
     <folder name="Data Sets">
-        <dataset name="Entities" definition="c:/development/accord/reports/site/SAE Australia/Entities.rsd"/>
-        <dataset name="User" definition="c:/development/accord/reports/site/SAE Australia/User.rsd"/>
+        <dataset name="Entities" definition="c:/development/accord/reports/site/SAE Australia/Entities.rsd"
+                 datasourceref="/Data Sources/Navigate"/>
+        <dataset name="User" definition="c:/development/accord/reports/site/SAE Australia/User.rsd"
+                 datasourceref="/Data Sources/Navigate"/>
     </folder>
     <folder name="Standard">
         <folder name="SAE-AU">
@@ -59,8 +61,8 @@
                     <report name="Graduation Certificate"
                             definition="c:/development/accord/reports/site/SAE Australia/Graduation Certificate.rdl"
                             datasourceref="/Data Sources/Navigate" datasourcerefname="Accord">
-                        <itemreference name="Entities" reference="/Data Sets/Entities" />
-                        <itemreference name="User" reference="/Data Sets/User" />
+                        <itemreference name="Entities" reference="/Data Sets/Entities"/>
+                        <itemreference name="User" reference="/Data Sets/User"/>
                     </report>
                     <report name="VET Graduation Certificate"
                             definition="c:/development/accord/reports/site/SAE Australia/VET Graduation Certificate.rdl"
