@@ -66,7 +66,6 @@ class RsSync
     public function __construct()
     {
         $this->path = new SplStack();
-
         $this->stack = new SplStack();
     }
 
@@ -90,7 +89,13 @@ class RsSync
         if (!array_key_exists('h', $args)) {
             throw new InvalidArgumentException("Missing reporting service URL: -h");
         }
-        $this->location = $args['h'];
+
+        if (substr($args['h'], -1, 1) == '/') {
+            $this->location = $args['h'] . 'ReportService2010.asmx';
+        }
+        else {
+            $this->location = $args['h'] . '/ReportService2010.asmx';
+        }
 
         // Root folder
         if (array_key_exists('r', $args)) {
@@ -343,6 +348,15 @@ class RsSync
                     }
                     $ref->Reference = $dsRef;
 
+                    fwrite(
+                        STDOUT,
+                        sprintf(
+                            '    Linking data source: %s => %s',
+                            $attrs['DATASOURCEREFNAME'],
+                            $dsRef
+                        ) . PHP_EOL
+                    );
+
                     $source = new Rs\DataSource();
                     $source->DataSourceReference = $ref;
                     $source->Name = $attrs['DATASOURCEREFNAME'];
@@ -355,10 +369,49 @@ class RsSync
 
                     $this->rs->SetItemDataSources($set);
                 }
+
+                $this->stack->push(array($this->path->top(), $name, $attrs));
+
+                break;
+            case 'ITEMREFERENCE':
+                $itemRef = $attrs['REFERENCE'];
+                $rootRef = $this->path->bottom();
+                if ($rootRef != self::ROOT) {
+                    $itemRef = $rootRef . $itemRef;
+                }
+
+                fwrite(
+                    STDOUT,
+                    sprintf(
+                        '    Linking reference: %s => %s',
+                        $attrs['NAME'],
+                        $itemRef
+                    ) . PHP_EOL
+                );
+
+                $itemReference = new Rs\ItemReference();
+                $itemReference->Name = $attrs['NAME'];
+                $itemReference->Reference = $attrs['REFERENCE'];
+
+                // Get the report we're in
+                $report = $this->stack->top();
+
+                $itemReferences = new Rs\SetItemReferences();
+                $itemReferences->ItemPath = $report[0] . '/' . $report[2]['NAME'];
+                // TODO: set all references in bulk!
+                $itemReferences->ItemReferences = [$itemReference];
+
+                $response = $this->rs->SetItemReferences($itemReferences);
+
                 break;
         }
     }
 
+    /**
+     * Process end XML elements
+     * @param resource $parser Xml parser
+     * @param string $name Element name
+     */
     protected function endElement($parser, $name)
     {
         switch ($name) {
@@ -367,12 +420,16 @@ class RsSync
                 $role = $this->stack->pop();
                 $response = $this->rs->CreateFolder(new Rs\CreateFolder('hi', '/', []));
                 //$response = $this->rs->CreateRole($role);
-                var_dump($response);
+                //var_dump($response);
                 exit;
                 break;
             case 'FOLDER':
                 // Pop the folder off the queue
                 $this->path->pop();
+                break;
+            case 'REPORT':
+                $this->stack->pop();
+                break;
         }
     }
 
@@ -383,7 +440,7 @@ class RsSync
     public function processLayout()
     {
         $layout = $this->layout;
-        //$this->validateLayout($layout);
+        $this->validateLayout($layout);
 
 
         $parser = xml_parser_create();
@@ -430,7 +487,7 @@ class RsSync
         // Replace WSDL URL with your URL, or even better a locally saved version of the file.
         $rs = new Rs\ReportingService2010([
             'soap_version' => SOAP_1_2,
-            'compression' => true,
+            'compression' => SOAP_COMPRESSION_ACCEPT | SOAP_COMPRESSION_GZIP,
             'exceptions' => true,
             //'cache_wsdl' => WSDL_CACHE_BOTH,
             'cache_wsdl' => WSDL_CACHE_NONE,
