@@ -302,17 +302,41 @@ class RsSync
                     ) . PHP_EOL
                 );
 
-                $report = new Rs\CreateCatalogItem();
-                $report->ItemType = 'DataSet';
-                $report->Name = $attrs['NAME'];
-                $report->Parent = $this->path->top();
-                $report->Overwrite = true;
+                $dataset = new Rs\CreateCatalogItem();
+                $dataset->ItemType = 'DataSet';
+                $dataset->Name = $attrs['NAME'];
+                $dataset->Parent = $this->path->top();
+                $dataset->Overwrite = true;
                 if (!is_readable($attrs['DEFINITION'])) {
                     throw new Exception("File not found: " . $attrs['DEFINITION']);
                 }
-                $report->Definition = file_get_contents($attrs['DEFINITION']);
-                $report->Properties = [];
-                $response = $this->rs->CreateCatalogItem($report);
+
+                // Change definition to point to live data source, if necessary
+                $definition = file_get_contents($attrs['DEFINITION']);
+                if (array_key_exists('DATASOURCEREF', $attrs)) {
+                    $dsRef = $attrs['DATASOURCEREF'];
+                    $rootRef = $this->path->bottom();
+                    if ($rootRef != self::ROOT) {
+                        $dsRef = $rootRef . $dsRef;
+                    }
+
+                    fwrite(
+                        STDOUT,
+                        sprintf(
+                            '    Linking data source: %s',
+                            $dsRef
+                        ) . PHP_EOL
+                    );
+
+                    $xml = new SimpleXMLElement($definition);
+                    $xml->DataSet->Query->DataSourceReference = $dsRef;
+
+                    $definition = $xml->asXML();
+                }
+
+                $dataset->Definition = $definition;
+                $dataset->Properties = [];
+                $response = $this->rs->CreateCatalogItem($dataset);
 
                 break;
             case 'REPORT':
@@ -376,10 +400,10 @@ class RsSync
             case 'ITEMREFERENCE':
                 $itemRef = $attrs['REFERENCE'];
                 $rootRef = $this->path->bottom();
+
                 if ($rootRef != self::ROOT) {
                     $itemRef = $rootRef . $itemRef;
                 }
-
                 fwrite(
                     STDOUT,
                     sprintf(
@@ -391,7 +415,7 @@ class RsSync
 
                 $itemReference = new Rs\ItemReference();
                 $itemReference->Name = $attrs['NAME'];
-                $itemReference->Reference = $attrs['REFERENCE'];
+                $itemReference->Reference = $itemRef;
 
                 // Get the report we're in
                 $report = $this->stack->top();
@@ -440,7 +464,7 @@ class RsSync
     public function processLayout()
     {
         $layout = $this->layout;
-        $this->validateLayout($layout);
+        //$this->validateLayout($layout);
 
 
         $parser = xml_parser_create();
