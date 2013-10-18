@@ -548,7 +548,7 @@ class RsSync
             'password' => $this->password,
             //'proxy_host' => 'localhost',
             //'proxy_port' => 8888
-        ], 'ReportService2010.wsdl');
+        ], dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'ReportService2010.wsdl');
 
         return $rs;
     }
