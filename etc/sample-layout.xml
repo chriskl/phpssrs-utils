@@ -1,118 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <home xmlns="https://github.com/chriskl/phpssrs-utils/layout" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-    <!--<role name="My Role" description="An example role">
-        <task id="TASK_1_ID"/>
-        <task id="TASK_2_ID"/>
-    </role>-->
-    <!--<schedule></schedule>
-    <subscription></subscription>-->
     <folder name="Data Sources">
-        <datasource name="Navigate"
-                    connectString="${datasource.Navigate.connectString}"
+        <datasource name="DS1"
+                    connectString="${ds1.connectString}"
                     credentialRetrieval="Store"
-                    userName="${datasource.Navigate.username}"
-                    password="${datasource.Navigate.password}">
-            <!--<property name="Region" value="UK"/>-->
-            <!--<property name="Department" value="IT"/>-->
-        </datasource>
-        <datasource name="Reporting"
-                    connectString="${datasource.Reporting.connectString}"
-                    credentialRetrieval="Prompt">
-            <!--<property name="Region" value="UK"/>-->
-            <!--<property name="Department" value="IT"/>-->
+                    userName="${ds1.username}"
+                    password="${ds1.password}">
         </datasource>
     </folder>
     <folder name="Data Sets">
-        <dataset name="Entities" definition="c:/development/accord/reports/site/SAE Australia/Entities.rsd"
-                 datasourceref="/Data Sources/Navigate"/>
-        <dataset name="User" definition="c:/development/accord/reports/site/SAE Australia/User.rsd"
-                 datasourceref="/Data Sources/Navigate"/>
+        <dataset name="Users" definition="c:\Solution\Project\Users.rsd"
+                 datasourceref="/Data Sources/DS1"/>
     </folder>
-    <folder name="Standard">
-        <folder name="SAE-AU">
-            <folder name="Finance">
-                <report name="Invoice"
-                        definition="c:/development/accord/reports/site/SAE Australia/Invoice.rdl"
-                        datasourceref="/Data Sources/Navigate" datasourcerefname="Accord">
-                </report>
-                <report name="Receipt"
-                        definition="c:/development/accord/reports/site/SAE Australia/Payment Receipt.rdl"
-                        datasourceref="/Data Sources/Navigate" datasourcerefname="Accord">
-                </report>
-                <report name="Outstanding Fees - Course Completed"
-                        definition="c:/development/accord/reports/site/SAE Australia/Outstanding Fees - Course Completed.rdl"
-                        datasourceref="/Data Sources/Navigate" datasourcerefname="Accord">
-                </report>
-                <report name="Outstanding Fees - Deferred or Cancelled students"
-                        definition="c:/development/accord/reports/site/SAE Australia/Outstanding fees - Deferred or Cancelled students.rdl"
-                        datasourceref="/Data Sources/Navigate" datasourcerefname="Accord">
-                </report>
-                <report name="Statement of Account"
-                        definition="c:/development/accord/reports/site/SAE Australia/Statement Of Account.rdl"
-                        datasourceref="/Data Sources/Navigate" datasourcerefname="Accord">
-                </report>
-            </folder>
-            <folder name="Enrolments">
-                <folder name="Academic">
-                    <report name="Academic Transcript"
-                            definition="c:/development/accord/reports/site/SAE Australia/Academic Transcript.rdl"
-                            datasourceref="/Data Sources/Navigate" datasourcerefname="Accord">
-                    </report>
-                    <report name="Graduation Certificate"
-                            definition="c:/development/accord/reports/site/SAE Australia/Graduation Certificate.rdl"
-                            datasourceref="/Data Sources/Navigate" datasourcerefname="Accord">
-                        <itemreference name="Entities" reference="/Data Sets/Entities"/>
-                        <itemreference name="User" reference="/Data Sets/User"/>
-                    </report>
-                    <report name="VET Graduation Certificate"
-                            definition="c:/development/accord/reports/site/SAE Australia/VET Graduation Certificate.rdl"
-                            datasourceref="/Data Sources/Navigate" datasourcerefname="Accord">
-                    </report>
-                </folder>
-                <folder name="Attendance">
-                    <report name="Attendance Statement"
-                            definition="c:/development/accord/reports/site/SAE Australia/Attendance Statement.rdl"
-                            datasourceref="/Data Sources/Navigate" datasourcerefname="Accord">
-                    </report>
-                    <report name="Attendance Warning Letter"
-                            definition="c:/development/accord/reports/site/SAE Australia/Attendance Warning Letter.rdl"
-                            datasourceref="/Data Sources/Navigate" datasourcerefname="Accord">
-                    </report>
-                    <report name="Certificate of Attendance"
-                            definition="c:/development/accord/reports/site/SAE Australia/Certificate of Attendance.rdl"
-                            datasourceref="/Data Sources/Navigate" datasourcerefname="Accord">
-                    </report>
-                </folder>
-            </folder>
-            <folder name="Study Periods">
-                <report name="Grade Distributions"
-                        definition="c:/development/accord/reports/site/SAE Australia/Grade Distributions.rdl"
-                        datasourceref="/Data Sources/Navigate" datasourcerefname="Accord">
-                </report>
-                <report name="Board of Examiners"
-                        definition="c:/development/accord/reports/site/SAE Australia/Board of Examiners Report.rdl"
-                        datasourceref="/Data Sources/Navigate" datasourcerefname="Accord">
-                </report>
-                <report name="Potential Graduates"
-                        definition="c:/development/accord/reports/site/SAE Australia/Potential Graduates.rdl"
-                        datasourceref="/Data Sources/Navigate" datasourcerefname="Accord">
-                </report>
-                <report name="Invalid Study Plans"
-                        definition="c:/development/accord/reports/site/SAE Australia/Student Who Can't Progress.rdl"
-                        datasourceref="/Data Sources/Navigate" datasourcerefname="Accord">
-                </report>
-            </folder>
-            <folder name="Admissions">
-                <report name="Letter of Offer"
-                        definition="c:/development/accord/reports/site/SAE Australia/Letter of Offer.rdl"
-
-                        datasourceref="/Data Sources/Navigate" datasourcerefname="Demo">
-                    <!-- todo: move to sub element for array of datasources -->
-                    <!--<property name="Region" value="UK"/>-->
-                    <!--<property name="Department" value="IT"/>-->
-                </report>
-            </folder>
+    <folder name="Reports">
+        <folder name="Business">
+            <report name="Invoice"
+                    definition="c:\Solution\Project\Invoice.rdl"
+                    datasourceref="/Data Sources/DS1"
+                    datasourcerefname="DS1"/>
+            <report name="Receipt"
+                    definition="c:\Solution\Project\Receipt.rdl"
+                    datasourceref="/Data Sources/DS1"
+                    datasourcerefname="DS1"/>
+        </folder>
+        <folder name="Commerce">
+            <report name="Bookings"
+                    definition="c:\Solution\Project\Bookings List.rdl"
+                    datasourceref="/Data Sources/DS1"
+                    datasourcerefname="DS1">
+                <itemreference name="Users" reference="/Data Sets/Users"/>
+            </report>
         </folder>
     </folder>
-    <folder name="Local"/>
 </home>

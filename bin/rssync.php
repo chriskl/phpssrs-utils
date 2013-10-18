@@ -23,7 +23,7 @@ require_once 'PhpSsrsUtils/RsSync.php';
 
 try {
     // Grab and clean up the CLI arguments
-    $args = getopt('l:h:r:p:');
+    $args = getopt('l:h:u:p:r:d:');
 
     RsSync::start($args);
 } catch (Exception $x) {
