@@ -104,8 +104,7 @@ class RsSync
 
         if (substr($args['h'], -1, 1) == '/') {
             $this->location = $args['h'] . 'ReportService2010.asmx';
-        }
-        else {
+        } else {
             $this->location = $args['h'] . '/ReportService2010.asmx';
         }
 
@@ -156,6 +155,45 @@ class RsSync
             $this->processArgs($args);
 
             $this->rs = $this->getClient();
+
+            // Ensure that the root exists
+            $parts = explode('/', $this->path->top());
+            $parent = '/';
+            foreach ($parts as $p) {
+                if ($p == '') {
+                    continue;
+                }
+                fwrite(
+                    STDOUT,
+                    sprintf(
+                        'Creating root folder: %s%s%s',
+                        $parent,
+                        ($parent == self::ROOT ? '' : '/'),
+                        $p
+                    ) . PHP_EOL
+                );
+                $folder = new Rs\CreateFolder($p, $parent, []);
+                try {
+                    $this->rs->CreateFolder($folder);
+                } catch (SoapFault $e) {
+                    // Ignore already exists exceptions
+                    if (strpos(
+                            $e->getMessage(),
+                            'Microsoft.ReportingServices.Diagnostics.Utilities.ItemAlreadyExistsException'
+                        ) === false
+                    ) {
+                        throw $e;
+                    }
+                } catch (Exception $e) {
+                    fwrite(STDERR, 'Error: ' . $e->getMessage() . PHP_EOL);
+                }
+
+                if ($parent == self::ROOT) {
+                    $parent .= $p;
+                } else {
+                    $parent .= '/' . $p;
+                }
+            }
 
             $this->processLayout();
         } catch (Exception $e) {
@@ -246,6 +284,8 @@ class RsSync
                     ) {
                         throw $e;
                     }
+                } catch (Exception $e) {
+                    fwrite(STDERR, 'Error: ' . $e->getMessage() . PHP_EOL);
                 }
 
                 // Push the folder onto the queue.  In SSRS root folder must be '/', but no other folders can have trailing slashes :(
@@ -313,7 +353,12 @@ class RsSync
 
                 $dataSource = new Rs\CreateDataSource($attrs['NAME'], $this->path->top(),
                     $overwrite, $definition, []);
-                $this->rs->CreateDataSource($dataSource);
+                try {
+                    $this->rs->CreateDataSource($dataSource);
+                } catch (Exception $e) {
+                    fwrite(STDERR, 'Error: ' . $e->getMessage() . PHP_EOL);
+                }
+
                 break;
             case 'DATASET':
                 fwrite(
@@ -360,7 +405,11 @@ class RsSync
 
                 $dataset->Definition = $definition;
                 $dataset->Properties = [];
-                $response = $this->rs->CreateCatalogItem($dataset);
+                try {
+                    $response = $this->rs->CreateCatalogItem($dataset);
+                } catch (Exception $e) {
+                    fwrite(STDERR, 'Error: ' . $e->getMessage() . PHP_EOL);
+                }
 
                 break;
             case 'REPORT':
@@ -384,7 +433,11 @@ class RsSync
                 }
                 $report->Definition = file_get_contents($attrs['DEFINITION']);
                 $report->Properties = [];
-                $response = $this->rs->CreateCatalogItem($report);
+                try {
+                    $response = $this->rs->CreateCatalogItem($report);
+                } catch (Exception $e) {
+                    fwrite(STDERR, 'Error: ' . $e->getMessage() . PHP_EOL);
+                }
 
                 // Set data source
                 if (array_key_exists('DATASOURCEREF', $attrs)) {
@@ -415,7 +468,11 @@ class RsSync
                     $set->ItemPath = $this->path->top() . '/' . $report->Name;
                     $set->DataSources = $sources;
 
-                    $this->rs->SetItemDataSources($set);
+                    try {
+                        $this->rs->SetItemDataSources($set);
+                    } catch (Exception $e) {
+                        fwrite(STDERR, 'Error: ' . $e->getMessage() . PHP_EOL);
+                    }
                 }
 
                 $this->stack->push(array($this->path->top(), $name, $attrs));
@@ -449,7 +506,11 @@ class RsSync
                 // TODO: set all references in bulk!
                 $itemReferences->ItemReferences = [$itemReference];
 
-                $response = $this->rs->SetItemReferences($itemReferences);
+                try {
+                    $response = $this->rs->SetItemReferences($itemReferences);
+                } catch (Exception $e) {
+                    fwrite(STDERR, 'Error: ' . $e->getMessage() . PHP_EOL);
+                }
 
                 break;
         }
@@ -534,21 +595,23 @@ class RsSync
     {
         // Replace WSDL URL with your URL, or even better a locally saved version of the file.
         $rs = new Rs\ReportingService2010([
-            'soap_version' => SOAP_1_2,
-            'compression' => SOAP_COMPRESSION_ACCEPT | SOAP_COMPRESSION_GZIP,
-            'exceptions' => true,
-            'cache_wsdl' => WSDL_CACHE_NONE,
-            'keep_alive' => true,
-            'features' => SOAP_SINGLE_ELEMENT_ARRAYS & SOAP_USE_XSI_ARRAY_TYPE,
-            'location' => $this->location,
-            //'uri' => 'http://schemas.microsoft.com/sqlserver/2010/06/30/reporting/reportingservices',
-            //'style' => SOAP_DOCUMENT,
-            //'use' => SOAP_LITERAL,
-            'login' => $this->username,
-            'password' => $this->password,
-            //'proxy_host' => 'localhost',
-            //'proxy_port' => 8888
-        ], dirname(__FILE__) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'ReportService2010.wsdl');
+                'soap_version' => SOAP_1_2,
+                'compression' => SOAP_COMPRESSION_ACCEPT | SOAP_COMPRESSION_GZIP,
+                'exceptions' => true,
+                'cache_wsdl' => WSDL_CACHE_NONE,
+                'keep_alive' => true,
+                'features' => SOAP_SINGLE_ELEMENT_ARRAYS & SOAP_USE_XSI_ARRAY_TYPE,
+                'location' => $this->location,
+                //'uri' => 'http://schemas.microsoft.com/sqlserver/2010/06/30/reporting/reportingservices',
+                //'style' => SOAP_DOCUMENT,
+                //'use' => SOAP_LITERAL,
+                'login' => $this->username,
+                'password' => $this->password,
+                //'proxy_host' => 'localhost',
+                //'proxy_port' => 8888
+            ], dirname(
+                __FILE__
+            ) . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . '..' . DIRECTORY_SEPARATOR . 'ReportService2010.wsdl');
 
         return $rs;
     }
