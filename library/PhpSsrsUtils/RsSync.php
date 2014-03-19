@@ -198,6 +198,8 @@ class RsSync
             $this->processLayout();
         } catch (Exception $e) {
             fwrite(STDERR, $e->getMessage() . PHP_EOL);
+
+            throw $e;
         }
     }
 
