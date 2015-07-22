@@ -18,6 +18,11 @@ class RsSync
     CONST ROOT = '/';
 
     /**
+     * Default socket timeout
+     */
+    CONST DEFAULT_SOCKET_TIMEOUT = 600;
+
+    /**
      * Current path
      * @var SplStack
      */
@@ -595,6 +600,8 @@ class RsSync
      */
     protected function getClient()
     {
+        ini_set('default_socket_timeout', self::DEFAULT_SOCKET_TIMEOUT);
+
         // Replace WSDL URL with your URL, or even better a locally saved version of the file.
         $rs = new Rs\ReportingService2010([
                 'soap_version' => SOAP_1_2,
