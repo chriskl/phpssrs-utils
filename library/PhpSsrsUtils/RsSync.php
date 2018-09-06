@@ -71,6 +71,12 @@ class RsSync
     public $password;
 
     /**
+     * Temporary way to store the current list of item references so they can be set in bulk
+     * @var Rs\SetItemReferences
+     */
+    public $itemReferences;
+
+    /**
      * Execute the rssync command
      * @param array $args Command line arguments
      */
@@ -484,6 +490,9 @@ class RsSync
 
                 $this->stack->push(array($this->path->top(), $name, $attrs));
 
+                $this->itemReferences = new Rs\SetItemReferences();
+                $this->itemReferences->ItemReferences = [];
+
                 break;
             case 'ITEMREFERENCE':
                 $itemRef = $attrs['REFERENCE'];
@@ -508,17 +517,8 @@ class RsSync
                 // Get the report we're in
                 $report = $this->stack->top();
 
-                $itemReferences = new Rs\SetItemReferences();
-                $itemReferences->ItemPath = $report[0] . '/' . $report[2]['NAME'];
-                // TODO: set all references in bulk!
-                $itemReferences->ItemReferences = [$itemReference];
-
-                try {
-                    $response = $this->rs->SetItemReferences($itemReferences);
-                } catch (Exception $e) {
-                    fwrite(STDERR, 'Error: ' . $e->getMessage() . PHP_EOL);
-                }
-
+                $this->itemReferences->ItemPath = $report[0] . '/' . $report[2]['NAME'];
+                $this->itemReferences->ItemReferences[] = $itemReference;
                 break;
         }
     }
@@ -545,6 +545,12 @@ class RsSync
                 break;
             case 'REPORT':
                 $this->stack->pop();
+
+                try {
+                    $response = $this->rs->SetItemReferences($this->itemReferences);
+                } catch (Exception $e) {
+                    fwrite(STDERR, 'Error: ' . $e->getMessage() . PHP_EOL);
+                }
                 break;
         }
     }
